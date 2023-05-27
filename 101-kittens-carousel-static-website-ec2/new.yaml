@@ -42,7 +42,7 @@ Resources:
             TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             FOLDER="https://$TOKEN@raw.githubusercontent.com/ersinsari13/MyProject/main/101-kittens-carousel-static-website-ec2/static-web/"
             curl -s --create-dirs -o "/var/www/html/index.html" -L "$FOLDER"index.html
-            curl -s --create-dirs -o "/var/www/html/cat0.jpg" -L "$FOLDER"fb.jpg
+            curl -s --create-dirs -o "/var/www/html/fb.jpg" -L "$FOLDER"fb.jpg
             curl -s --create-dirs -o "/var/www/html/cat0.jpg" -L "$FOLDER"cat0.jpg
             curl -s --create-dirs -o "/var/www/html/cat1.jpg" -L "$FOLDER"cat1.jpg
             curl -s --create-dirs -o "/var/www/html/cat2.jpg" -L "$FOLDER"cat2.jpg
