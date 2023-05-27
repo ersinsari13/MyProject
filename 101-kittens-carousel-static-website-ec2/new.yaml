@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: |
-   CloudFormation Template for Kittens Carousel Static Website on EC2.
+Description: >
+  CloudFormation Template for Kittens Carousel Static Website on EC2.
   This template deploys Kittens Carousel Static Website on Amazon Linux 2
   (ami-0715c1897453cabd1) EC2 Instance with custom security group 
   allowing http connections on port 80. Kittens Carousel Static Website 
@@ -33,18 +33,20 @@ Resources:
       Tags: 
         - Key: Name
           Value: !Sub Web Server of ${AWS::StackName} Stack 
-      UserData: |
-        #! /bin/bash
-        yum update -y
-        yum install httpd
-        TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-        FOLDER="https://$TOKEN@https://raw.githubusercontent.com/ersinsari13/MyProject/main/101-kittens-carousel-static-website-ec2/static-web/"
-        curl -s --create-dirs -o "/var/www/html/index.html" -L "$FOLDER"index.html
-        curl -s --create-dirs -o "/var/www/html/cat0.jpg" -L "$FOLDER"cat0.jpg
-        curl -s --create-dirs -o "/var/www/html/cat1.jpg" -L "$FOLDER"cat1.jpg
-        curl -s --create-dirs -o "/var/www/html/cat2.jpg" -L "$FOLDER"cat2.jpg
-        systemctl start httpd
-        systemctl enable httpd
+      UserData:
+        Fn::Base64: 
+          !Sub |
+            #! /bin/bash
+            yum update -y
+            yum install httpd -y
+            TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            FOLDER="https://$TOKEN@raw.githubusercontent.com/ersinsari13/MyProject/main/101-kittens-carousel-static-website-ec2/static-web/"
+            curl -s --create-dirs -o "/var/www/html/index.html" -L "$FOLDER"index.html
+            curl -s --create-dirs -o "/var/www/html/cat0.jpg" -L "$FOLDER"cat0.jpg
+            curl -s --create-dirs -o "/var/www/html/cat1.jpg" -L "$FOLDER"cat1.jpg
+            curl -s --create-dirs -o "/var/www/html/cat2.jpg" -L "$FOLDER"cat2.jpg
+            systemctl start httpd
+            systemctl enable httpd
 
 Outputs:
   WebsiteURL:
