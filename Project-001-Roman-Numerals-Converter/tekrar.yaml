@@ -1,33 +1,35 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Description: |
-  This template set a ec2 with flask which is created cloudformation service.
+  This template was created for convert num project.
   
 Parameters:
   
+  Env:
+    Description: Choose a ami
+    Type: String
+    Default: linux
+  
   VPC:
-    Description: This is a default vpc
+    Description: Choose a vpc
     Type: AWS::EC2::VPC::Id
-
-  KeyName:
-    Description: Choose a key name.
-    Type: AWS::EC2::KeyPair::KeyName
-    
+  
   InstanceType:
-    Description: Choose a instance type. 
+    Description: Choose a instance type
     Type: String
     Default: t2.micro
     AllowedValues:
-      - t2.micro
-      - t3.micro
-      - t2.nano 
-    
-  EnvPara:
-    Description:  This is linux 2023 aws ami.
-    Type: String
-    Default: linux
-
+        - t2.micro
+        - t3.micro
+        - t2.nano 
+      
+  
+  KeyName:
+    Description: Choose a key pair
+    Type: AWS::EC2::KeyPair::KeyName
+  
 Mappings:
+   
   RegionImageMap:
     us-east-1:
       linux: ami-0715c1897453cabd1
@@ -41,18 +43,18 @@ Mappings:
       linux: ami-04f7efe62f419d9f5
   
 Resources:
-  
-  MyInstances:
+
+  MyInstance:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: !FindInMap 
         - RegionImageMap
         - !Ref "AWS::Region"
-        - !Ref EnvPara
+        - !Ref Env
       InstanceType: !Ref InstanceType
-      KeyName: !Ref KeyName
+      KeyName: !Ref KeyName 
       SecurityGroupIds: 
-        - !GetAtt MySecGroup.GroupId    #!Ref MySecGroup
+        - !Ref MySecGroup  # !GetAtt MySecGroup.GroupId
       UserData: !Base64 |
         #! /bin/bash
         yum update -y
@@ -67,26 +69,29 @@ Resources:
         cd ..
         chmod +x app.py
         python3 app.py
+
+
   MySecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: SSh and HTTP # Required
-      GroupName: flasksecgroup
+      GroupDescription: SSH and HTTP # Required
+      GroupName: flaskapp
       SecurityGroupIngress: 
         - IpProtocol: tcp
-          FromPort: 22
+          FromPort: 22 
           ToPort: 22
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
-          FromPort: 80
+          FromPort: 80 
           ToPort: 80
-          CidrIp: 0.0.0.0/0
+          CidrIp: 0.0.0.0/0  
       VpcId: !Ref VPC
+
   
 Outputs:
-  FlaskDNS:
-    Description: This DNS give us dns name
+  DNSName:
+    Description: This is dns name
     Value: !Join
-    - ''
-    - - 'http://'
-      - !GetAtt MyInstances.PublicDnsName
+    - ''  
+    - - 'https://'
+      - !GetAtt MyInstance.PublicDnsName

@@ -85,17 +85,17 @@ cd ..
 python3 app.py
 ```
 ```bash
-aws ec2 run-instances --image-id $LATEST_AMI --count 1 --instance-type t2.micro --key-name okt-aws --security-group-ids sg-xxxxxxxxxx --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=roman_numbers}]' --user-data file:///home/ec2-user/userdata.sh
+aws ec2 run-instances --image-id $LATEST_AMI --count 1 --instance-type t2.micro --key-name  --security-group-ids sg-0224727064491bfa9 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=roman_numbers}]' --user-data file:///home/ec2-user/userdata.sh
 or
 
 aws ec2 run-instances \
-    --image-id $LATEST_AMI \
+    --image-id ami-0806bc468ce3a22ec \
     --count 1 \
     --instance-type t2.micro \
     --key-name usa_key \
-    --security-group-ids sg-01045d6593b631bfc \
+    --security-group-ids sg-0224727064491bfa9 \
     --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=roman_numbers}]' \
-    --user-data file:///home/ec2-user/userdata.sh
+    --user-data file://userdata.sh
 ```
 
 - To see the each instances Ip we'll use describe instance CLI command
