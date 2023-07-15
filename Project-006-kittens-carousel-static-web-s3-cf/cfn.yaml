@@ -1,0 +1,97 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: |
+  This template for project-6 
+Parameters:
+  HostZone:
+    Description: This is host-zone-id
+    Type: AWS::Route53::HostedZone::Id
+Metadata:
+  
+Mappings:
+  
+Conditions:
+  
+Resources:
+  
+  Route53Record:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        DNSName: !GetAtt S3Bucket.DomainName
+        EvaluateTargetHealth: false
+        HostedZoneId: "Z2FDTNDATAQYW2"
+      HostedZoneId: !Ref HostZone
+      Name: "kitten.ersinsari.com" # Required
+      ResourceRecords: 
+        ResourceRecords
+      SetIdentifier: "String"
+      TTL: "String"
+      Type: "String" # Required
+  
+  Certificated:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: "ersinsari.com" # Required
+
+  CloudFront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CNAMEs:
+          - kitten.ersinsari.com
+        ContinuousDeploymentPolicyId: "String"
+        DefaultCacheBehavior: 
+        DefaultRootObject: "/"
+        Enabled: false
+        HttpVersion: "http2"
+        Origins:
+           CustomOriginConfig: 
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: match-viewer
+              OriginSSLProtocols: 
+                - TLSv1.2
+           DomainName: !GetAtt S3Bucket.DomainName
+           Id: String
+        PriceClass: "PriceClass_All"
+        ViewerCertificate: !Ref Certificated
+  
+  S3BUCKETPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3Bucket # Required
+      PolicyDocument:
+         Version: '2012-10-17'
+         Statement:
+          - Sid: "PublicReadGetObject"
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource:
+              Fn::Join:
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref 'S3Bucket'
+                  - '/*'
+
+  
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "kitten.ersinsari.com"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      WebsiteConfiguration:
+        IndexDocument: "index.html"
+  
+  Outputs:
+    S3Bucketurl:
+      Description: This is s3 bucket url
+      Value: !GetAtt S3Bucket.WebsiteURL
+    CloudfrontUrl:
+      Description: This is cloudfront url 
+      Value:
